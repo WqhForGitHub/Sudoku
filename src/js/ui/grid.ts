@@ -3,11 +3,12 @@
 // import { Generator } from '../core/generator'
 import { Sudoku } from '../core/sudoku'
 import { Checker } from '../core/checker'
+import PopupNumbers from './popupnumbers';
 
 class Grid {
-    private _$container:any;
+    private _$container: JQuery;
 
-    constructor(container:any) {
+    constructor(container: JQuery) {
         this._$container = container;
     }
     
@@ -56,13 +57,14 @@ class Grid {
      */
     check() {
         // 从界面获取需要检查的数据
-        const data = this._$container.children().map((rowIndex :any, div: any) => {
+        const data = this._$container.children()
+        .toArray()
+        .map((div: HTMLElement): number[] => {
             return $(div).children()
-                         .map((colIndex, span) => parseInt($(span).text()) || 0 );
+                         .toArray()
+                         .map(span => parseInt($(span).text(), 10) || 0 );
 
         })
-        .toArray()
-        .map(($data: any) => $data.toArray())
 
         console.log(data)
         
@@ -117,7 +119,7 @@ class Grid {
     }
 
 
-    bindPopup(popupNumbers:any) {
+    bindPopup(popupNumbers: PopupNumbers) {
         this._$container.on('click', 'span', (e: any) => {
             const $cell = $(e.target);
             if($cell.is('.fixed')) {

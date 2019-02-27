@@ -1,7 +1,7 @@
 import { Toolkit } from './toolkit'
 // 检查数据解决方案
 
-function checkArray(array:any) {
+function checkArray(array: number[]):boolean[] {
     const length = array.length;
     const marks = new Array(length);
     marks.fill(true);
@@ -38,7 +38,7 @@ function checkArray(array:any) {
  * 输出:检查是否成功,marks
  */
 export class Checker {
-    private _matrix:any;
+    private _matrix: number[][];
 
     private _matrixMarks:any;
     private _success:boolean = false;

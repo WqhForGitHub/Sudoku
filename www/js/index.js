@@ -377,66 +377,15 @@ exports.default = Sudoku;
 
 "use strict";
 
-/**
- * 矩阵和数组相关工具
- */
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var matrixToolkit = {
-    makeRow: function makeRow() {
-        var v = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-
-        var array = new Array(9);
-        array.fill(v);
-        return array;
-    },
-    makeMatrix: function makeMatrix() {
-        var _this = this;
-
-        var v = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-
-        return Array.from({ length: 9 }, function () {
-            return _this.makeRow(v);
-        });
-    },
-
-    // 洗牌算法
-    shuffle: function shuffle(array) {
-        var endIndex = array.length - 2;
-        for (var i = 0; i <= endIndex; i++) {
-            var j = i + Math.floor(Math.random() * (array.length - i));
-            var _ref = [array[j], array[i]];
-            array[i] = _ref[0];
-            array[j] = _ref[1];
-        }
-        return array;
-    },
-
-    /**
-     *
-     */
-    checkFillable: function checkFillable(matrix, n, rowIndex, colIndex) {
-        var row = matrix[rowIndex];
-        var column = this.makeRow().map(function (v, i) {
-            return matrix[i][colIndex];
-        });
-
-        var _boxToolkit$convertTo = boxToolkit.convertToBoxIndex(rowIndex, colIndex),
-            boxIndex = _boxToolkit$convertTo.boxIndex;
-
-        var box = boxToolkit.getBoxCells(matrix, boxIndex);
-        for (var i = 0; i < 9; i++) {
-            if (row[i] === n || column[i] === n || box[i] === n) {
-                return false;
-            }
-        }
-        return true;
-    }
-};
+/**
+ * 矩阵和数组相关工具
+ */
 /**
  * 宫坐标系工具
  */
@@ -465,7 +414,75 @@ var boxToolkit = {
         };
     }
 };
+
+var matrixToolkit = function () {
+    function matrixToolkit() {
+        _classCallCheck(this, matrixToolkit);
+    }
+
+    _createClass(matrixToolkit, null, [{
+        key: "makeRow",
+        value: function makeRow() {
+            var v = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+
+            var array = new Array(9);
+            array.fill(v);
+            return array;
+        }
+    }, {
+        key: "makeMatrix",
+        value: function makeMatrix() {
+            var _this = this;
+
+            var v = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+
+            return Array.from({ length: 9 }, function () {
+                return _this.makeRow(v);
+            });
+        }
+        // 洗牌算法
+
+    }, {
+        key: "shuffle",
+        value: function shuffle(array) {
+            var endIndex = array.length - 2;
+            for (var i = 0; i <= endIndex; i++) {
+                var j = i + Math.floor(Math.random() * (array.length - i));
+                var _ref = [array[j], array[i]];
+                array[i] = _ref[0];
+                array[j] = _ref[1];
+            }
+            return array;
+        }
+        /**
+         *
+         */
+
+    }, {
+        key: "checkFillable",
+        value: function checkFillable(matrix, n, rowIndex, colIndex) {
+            var row = matrix[rowIndex];
+            var column = this.makeRow().map(function (v, i) {
+                return matrix[i][colIndex];
+            });
+
+            var _boxToolkit$convertTo = boxToolkit.convertToBoxIndex(rowIndex, colIndex),
+                boxIndex = _boxToolkit$convertTo.boxIndex;
+
+            var box = boxToolkit.getBoxCells(matrix, boxIndex);
+            for (var i = 0; i < 9; i++) {
+                if (row[i] === n || column[i] === n || box[i] === n) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }]);
+
+    return matrixToolkit;
+}();
 // 工具集
+
 
 var Toolkit = function () {
     function Toolkit() {
@@ -606,12 +623,10 @@ var Grid = function () {
         key: "check",
         value: function check() {
             // 从界面获取需要检查的数据
-            var data = this._$container.children().map(function (rowIndex, div) {
-                return $(div).children().map(function (colIndex, span) {
-                    return parseInt($(span).text()) || 0;
+            var data = this._$container.children().toArray().map(function (div) {
+                return $(div).children().toArray().map(function (span) {
+                    return parseInt($(span).text(), 10) || 0;
                 });
-            }).toArray().map(function ($data) {
-                return $data.toArray();
             });
             console.log(data);
             var checker = new checker_1.Checker(data);

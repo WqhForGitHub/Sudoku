@@ -1,33 +1,79 @@
+export interface IBoxCoord {
+    boxIndex: number;
+    cellIndex: number;
+}
+export interface IRowColCoord {
+    rowIndex: number;
+    colIndex: number;
+}
+
+
 /**
  * 矩阵和数组相关工具
  */
+/**
+ * 宫坐标系工具
+ */
+const boxToolkit = {
+    getBoxCells(matrix: number[][], boxIndex: number): number[] {
+        const startRowIndex = Math.floor(boxIndex / 3) * 3;
+        const startColIndex = boxIndex % 3 * 3;
+        const result = [];
+        for(let cellIndex = 0; cellIndex < 9 ; cellIndex++) {
+            const rowIndex = startRowIndex + Math.floor(cellIndex / 3);
+            const colIndex = startColIndex + cellIndex % 3;
+            result.push(matrix[rowIndex][colIndex]);
+        }
+        return result;
+    },
+    convertToBoxIndex(rowIndex: number, colIndex: number): IBoxCoord {
+        return {
+            boxIndex: Math.floor(rowIndex / 3) * 3 + Math.floor(colIndex / 3),
+            cellIndex: rowIndex % 3 * 3 + colIndex % 3
+        };
+    },
+
+    convertFromBoxIndex(boxIndex: number, cellIndex: number): IRowColCoord {
+        return {
+            rowIndex: Math.floor(boxIndex / 3) * 3 + Math.floor(cellIndex / 3),
+            colIndex: boxIndex % 3 * 3 + cellIndex % 3
+
+        }
+    }
+    
+};
 
 
-const matrixToolkit = {
-     makeRow(v: any = 0): any[] {
+class matrixToolkit {
+    static makeRow(): number[];
+    static makeRow<T>(v: T): T[];
+    static makeRow(v: any = 0): any[] {
         const array = new Array(9);
         array.fill(v);
         return array;
-    },
+    }
     
-    makeMatrix(v: any = 0) {
+
+    static makeMatrix():number[][];
+    static makeMatrix<T>(v: T): T[][];
+    static makeMatrix(v: any = 0) {
        return Array.from({length: 9}, () => this.makeRow(v))
-    },
+    }
     
     // 洗牌算法
-    shuffle(array:any) {
+    static shuffle<T>(array: T[]): T[]{
         const endIndex  = array.length -2 ;
         for (let i = 0; i <= endIndex; i++) {
             const j = i + Math.floor(Math.random() * (array.length - i));
             [array[i], array[j]] = [array[j], array[i]]
         }
         return array;
-    },
+    }
 
     /**
      * 
      */
-    checkFillable(matrix:any, n:any, rowIndex:any, colIndex:any) {
+    static checkFillable(matrix:number[][], n: number, rowIndex: number, colIndex: number): boolean {
         const row = matrix[rowIndex];
         const column = this.makeRow().map((v, i) => matrix[i][colIndex]);
         const { boxIndex } = boxToolkit.convertToBoxIndex(rowIndex, colIndex)
@@ -45,37 +91,6 @@ const matrixToolkit = {
     
 }
 
-/**
- * 宫坐标系工具
- */
-const boxToolkit = {
-    getBoxCells(matrix:any, boxIndex:any) {
-        const startRowIndex = Math.floor(boxIndex / 3) * 3;
-        const startColIndex = boxIndex % 3 * 3;
-        const result = [];
-        for(let cellIndex = 0; cellIndex < 9 ; cellIndex++) {
-            const rowIndex = startRowIndex + Math.floor(cellIndex / 3);
-            const colIndex = startColIndex + cellIndex % 3;
-            result.push(matrix[rowIndex][colIndex]);
-        }
-        return result;
-    },
-    convertToBoxIndex(rowIndex:any, colIndex:any) {
-        return {
-            boxIndex: Math.floor(rowIndex / 3) * 3 + Math.floor(colIndex / 3),
-            cellIndex: rowIndex % 3 * 3 + colIndex % 3
-        };
-    },
-
-    convertFromBoxIndex(boxIndex:any, cellIndex:any) {
-        return {
-            rowIndex: Math.floor(boxIndex / 3) * 3 + Math.floor(cellIndex / 3),
-            colIndex: boxIndex % 3 * 3 + cellIndex % 3
-
-        }
-    }
-    
-};
 
 
 
@@ -88,7 +103,7 @@ export class Toolkit {
     /**
      * 矩阵和数据相关的工具
      */
-    static get matrix() {
+    static get matrix(): typeof matrixToolkit {
         return matrixToolkit
     }
 
@@ -101,5 +116,6 @@ export class Toolkit {
         return boxToolkit
     }
 };
+
 
 export default Toolkit;

@@ -26,10 +26,10 @@ export class Generator {
         }
         return true;
     }
-    fillNumber(n:any) {
+    private fillNumber(n: number) {
         return this.fillRow(n, 0)
     }
-    fillRow(n:any, rowIndex:any) {
+    private fillRow(n: number, rowIndex: number) {
         if (rowIndex > 8) {
             return true;
         }
